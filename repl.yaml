@@ -1,0 +1,20 @@
+- hosts: web01
+  become: true
+
+  tasks:
+  - name: Check that the somefile exists
+    ansible.builtin.stat:
+      path: /etc/apt/sources.list.d/postgrespro-std-12.list
+    register: stat_result
+
+  - name: Print true
+    ansible.builtin.debug:
+      msg: "File_exist"
+    when: stat_result.stat.exists
+
+  - name: Replace old var
+    ansible.builtin.replace:
+      path: /etc/apt/sources.list.d/postgrespro-std-12.list
+      regexp: 'deb'
+      replace: '#deb'
+    when: stat_result.stat.exists
